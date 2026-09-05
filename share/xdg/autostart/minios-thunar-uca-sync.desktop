@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=MiniOS Thunar Actions
+Comment=Synchronize MiniOS custom actions for Thunar
+Exec=/usr/bin/minios-thunar-uca-sync
+OnlyShowIn=XFCE;
+NoDisplay=true
+Terminal=false
+StartupNotify=false

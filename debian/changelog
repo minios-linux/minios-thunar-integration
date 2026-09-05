@@ -1,0 +1,12 @@
+minios-thunar-integration (1.0.0) unstable; urgency=medium
+
+  * Initial package for MiniOS Thunar integration
+  * Add localized, idempotent MiniOS custom-action synchronization without
+    replacing user-owned Thunar actions or wrapping the system Thunar binary
+  * Add GTK create/extract progress and error dialogs backed by dir2sb/sb2dir
+  * Delegate AUFS activation and deactivation exclusively to minios-tools sb
+  * Support Thunar 1.6 from Ubuntu 18.04 through current Thunar releases
+  * Use wide indeterminate progress bars with live phase text instead of small
+    spinners or misleading synthetic percentages
+
+ -- crims0n <crims0n@minios.dev>  Sat, 05 Sep 2026 03:43:56 +0300

@@ -1,0 +1,214 @@
+#!/usr/bin/python3
+from __future__ import print_function
+
+import gettext
+import os
+import stat
+import subprocess
+import sys
+import tempfile
+import xml.etree.ElementTree as ET
+
+DOMAIN = 'minios-thunar-actions'
+LOCALE_DIR = '/usr/share/locale'
+
+TERMINAL_ID = '1713380276737258-1'
+ACTIVATE_ID = '1713385765967387-1'
+DEACTIVATE_ID = '1713385872440460-2'
+CREATE_ID = '1713386118612735-3'
+EXTRACT_ID = '1713386196741360-4'
+KNOWN_IDS = frozenset((
+    TERMINAL_ID, ACTIVATE_ID, DEACTIVATE_ID, CREATE_ID, EXTRACT_ID,
+))
+
+FINDMNT_PATHS = ('/usr/bin/findmnt', '/bin/findmnt')
+FRONTEND = '/usr/bin/minios-thunar-actions'
+
+
+def translator(localedir=LOCALE_DIR):
+    return gettext.translation(
+        DOMAIN, localedir=localedir, fallback=True).gettext
+
+
+_ = translator()
+
+
+def config_path():
+    base = os.environ.get('XDG_CONFIG_HOME')
+    if not base:
+        base = os.path.join(os.path.expanduser('~'), '.config')
+    return os.path.join(base, 'Thunar', 'uca.xml')
+
+
+def findmnt_path():
+    for path in FINDMNT_PATHS:
+        if os.path.isfile(path) and os.access(path, os.X_OK):
+            return path
+    return None
+
+
+def root_fstype():
+    executable = findmnt_path()
+    if executable is None:
+        return ''
+    try:
+        output = subprocess.check_output(
+            [executable, '-rn', '--mountpoint', '/', '-o', 'FSTYPE'],
+            universal_newlines=True, stderr=subprocess.DEVNULL)
+    except (OSError, subprocess.CalledProcessError):
+        return ''
+    return output.strip()
+
+
+def add_text(parent, tag, value):
+    child = ET.SubElement(parent, tag)
+    child.text = value
+    return child
+
+
+# Keep this schema compatible with Thunar 1.6 (Ubuntu 18.04).  In
+# particular, do not emit newer elements such as <submenu> or <range>;
+# Thunar 1.6 treats unknown UCA elements as parse errors.
+def make_action(unique_id, icon, name, command, description,
+                patterns, file_type, startup_notify=False):
+    action = ET.Element('action')
+    add_text(action, 'icon', icon)
+    add_text(action, 'name', name)
+    add_text(action, 'unique-id', unique_id)
+    add_text(action, 'command', command)
+    add_text(action, 'description', description)
+    add_text(action, 'patterns', patterns)
+    if startup_notify:
+        ET.SubElement(action, 'startup-notify')
+    ET.SubElement(action, file_type)
+    action.tail = '\n'
+    return action
+
+
+def desired_actions(is_aufs):
+    actions = [
+        make_action(
+            TERMINAL_ID, 'utilities-terminal', _('Open Terminal Here'),
+            'exo-open --working-directory %f --launch TerminalEmulator',
+            _('Open terminal in the current directory'), '*',
+            'directories', True),
+        make_action(
+            CREATE_ID, 'module-create', _('Create Module…'),
+            FRONTEND + ' create %f',
+            _('Create a MiniOS module from the selected directory'), '*',
+            'directories'),
+        make_action(
+            EXTRACT_ID, 'module-extract', _('Extract Module…'),
+            FRONTEND + ' extract %f',
+            _('Extract the selected MiniOS module into a directory'), '*.sb',
+            'other-files'),
+    ]
+    if is_aufs:
+        actions.extend((
+            make_action(
+                ACTIVATE_ID, 'module-connect', _('Activate Module'),
+                FRONTEND + ' activate %f',
+                _('Activate the selected MiniOS module'), '*.sb',
+                'other-files'),
+            make_action(
+                DEACTIVATE_ID, 'module-disconnect', _('Deactivate Module'),
+                FRONTEND + ' deactivate %f',
+                _('Deactivate the selected MiniOS module'), '*.sb',
+                'other-files'),
+        ))
+    return actions
+
+
+def action_id(element):
+    if element.tag != 'action':
+        return None
+    return element.findtext('unique-id')
+
+
+def sync_root(root, is_aufs):
+    if root.tag != 'actions':
+        raise ValueError(_('Thunar custom actions file has an invalid root element.'))
+
+    before = ET.tostring(root, encoding='utf-8')
+    desired = desired_actions(is_aufs)
+    rebuilt = []
+    inserted = False
+
+    for child in list(root):
+        if action_id(child) in KNOWN_IDS:
+            if not inserted:
+                rebuilt.extend(desired)
+                inserted = True
+            continue
+        rebuilt.append(child)
+
+    if not inserted:
+        rebuilt.extend(desired)
+    root[:] = rebuilt
+    if root.text is None:
+        root.text = '\n'
+
+    after = ET.tostring(root, encoding='utf-8')
+    return before != after
+
+
+def parse_tree(path):
+    try:
+        return ET.parse(path)
+    except (ET.ParseError, ValueError) as error:
+        raise ValueError(str(error))
+
+
+def atomic_write(tree, path, mode):
+    directory = os.path.dirname(path)
+    fd, temporary = tempfile.mkstemp(prefix='.uca.xml.', dir=directory)
+    try:
+        with os.fdopen(fd, 'wb') as output:
+            tree.write(output, encoding='UTF-8', xml_declaration=True)
+            output.flush()
+            os.fsync(output.fileno())
+        os.chmod(temporary, mode)
+        os.replace(temporary, path)
+    except Exception:
+        try:
+            os.unlink(temporary)
+        except OSError:
+            pass
+        raise
+
+
+def sync_file(path, is_aufs):
+    exists = os.path.exists(path)
+    directory = os.path.dirname(path)
+    if not os.path.isdir(directory):
+        os.makedirs(directory, mode=0o700)
+
+    if exists:
+        mode = stat.S_IMODE(os.stat(path).st_mode)
+        tree = parse_tree(path)
+    else:
+        mode = 0o600
+        root = ET.Element('actions')
+        root.text = '\n'
+        tree = ET.ElementTree(root)
+
+    if not sync_root(tree.getroot(), is_aufs) and exists:
+        return False
+
+    atomic_write(tree, path, mode)
+    return True
+
+
+def main():
+    path = config_path()
+    try:
+        sync_file(path, root_fstype() == 'aufs')
+    except (OSError, ValueError) as error:
+        message = _('Could not update Thunar custom actions: {}').format(error)
+        print('minios-thunar-uca-sync: ' + message, file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == '__main__':
+    sys.exit(main())

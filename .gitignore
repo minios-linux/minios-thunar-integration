@@ -1,0 +1,16 @@
+/build/
+__pycache__/
+*.pyc
+*.pyo
+*.mo
+*.deb
+*.dsc
+*.changes
+*.buildinfo
+*.tar.*
+debian/.debhelper/
+debian/debhelper-build-stamp
+debian/files
+debian/*.substvars
+debian/minios-thunar-integration/
+debian/tmp/

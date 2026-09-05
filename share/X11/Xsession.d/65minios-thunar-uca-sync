@@ -1,0 +1,5 @@
+# Synchronize MiniOS Thunar actions before xfce4-session can start Thunar.
+# Xsession.d snippets are sourced in the user's session shell.
+if [ -x /usr/bin/minios-thunar-uca-sync ]; then
+    /usr/bin/minios-thunar-uca-sync >/dev/null || true
+fi

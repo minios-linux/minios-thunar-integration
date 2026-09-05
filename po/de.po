@@ -1,0 +1,169 @@
+# Translations for minios-thunar-actions.
+# Copyright (C) 2026
+# This file is distributed under the same license as the minios-thunar-actions package.
+msgid ""
+msgstr ""
+"Project-Id-Version: minios-thunar-integration 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-05 19:21+0300\n"
+"PO-Revision-Date: 2026-09-04 21:17+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: bin/minios-thunar-actions:98 bin/minios-thunar-actions:377
+msgid "Create Module"
+msgstr "Modul erstellen"
+
+#: bin/minios-thunar-actions:99
+msgid "Create"
+msgstr "Erstellen"
+
+#: bin/minios-thunar-actions:102 bin/minios-thunar-actions:383
+msgid "Extract Module"
+msgstr "Modul extrahieren"
+
+#: bin/minios-thunar-actions:103
+msgid "Extract"
+msgstr "Extrahieren"
+
+#: bin/minios-thunar-actions:108 bin/minios-thunar-actions:155
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: bin/minios-thunar-actions:124
+msgid "The selected destination already exists."
+msgstr "Das gewählte Ziel existiert bereits."
+
+#: bin/minios-thunar-actions:144 bin/minios-thunar-actions:189
+msgid "Preparing…"
+msgstr "Vorbereitung…"
+
+#: bin/minios-thunar-actions:170
+msgid "Cancelling…"
+msgstr "Abbruch läuft…"
+
+#: bin/minios-thunar-actions:190
+msgid "Compressing module…"
+msgstr "Modul wird komprimiert…"
+
+#: bin/minios-thunar-actions:191
+msgid "Verifying module…"
+msgstr "Modul wird überprüft…"
+
+#: bin/minios-thunar-actions:192
+msgid "Publishing result…"
+msgstr "Ergebnis wird veröffentlicht…"
+
+#: bin/minios-thunar-actions:193
+msgid "Extracting module…"
+msgstr "Modul wird extrahiert…"
+
+#: bin/minios-thunar-actions:194
+msgid "Finishing…"
+msgstr "Abschluss…"
+
+#: bin/minios-thunar-actions:196
+msgid "Working…"
+msgstr "Wird ausgeführt…"
+
+#: bin/minios-thunar-actions:212 bin/minios-thunar-actions:216
+msgid "The module tool returned invalid progress data."
+msgstr "Das Modul-Tool hat ungültige Fortschrittsdaten zurückgegeben."
+
+#: bin/minios-thunar-actions:337
+msgid "Creating Module"
+msgstr "Modul wird erstellt"
+
+#: bin/minios-thunar-actions:339
+msgid "Extracting Module"
+msgstr "Modul wird extrahiert"
+
+#: bin/minios-thunar-actions:346 bin/minios-thunar-actions:368
+msgid "The module operation failed."
+msgstr "Der Modulvorgang ist fehlgeschlagen."
+
+#: bin/minios-thunar-actions:354 bin/minios-thunar-actions:395
+#: bin/minios-thunar-actions:401
+msgid "MiniOS Module Action"
+msgstr "MiniOS Modul-Aktion"
+
+#: bin/minios-thunar-actions:355
+msgid "This action is available only when the current root filesystem uses AUFS."
+msgstr "Diese Aktion ist nur verfügbar, wenn das aktuelle Root-Dateisystem AUFS verwendet."
+
+#: bin/minios-thunar-actions:359 bin/minios-thunar-uca-sync:109
+msgid "Activate Module"
+msgstr "Modul aktivieren"
+
+#: bin/minios-thunar-actions:360
+msgid "Activating module…"
+msgstr "Modul wird aktiviert…"
+
+#: bin/minios-thunar-actions:362 bin/minios-thunar-uca-sync:114
+msgid "Deactivate Module"
+msgstr "Modul deaktivieren"
+
+#: bin/minios-thunar-actions:363
+msgid "Deactivating module…"
+msgstr "Modul wird deaktiviert…"
+
+#: bin/minios-thunar-actions:378
+msgid "The selected path is not a directory."
+msgstr "Der gewählte Pfad ist kein Verzeichnis."
+
+#: bin/minios-thunar-actions:384
+msgid "The selected module is not a regular file."
+msgstr "Das gewählte Modul ist keine reguläre Datei."
+
+#: bin/minios-thunar-actions:396
+msgid "The requested Thunar action is not valid."
+msgstr "Die angeforderte Thunar-Aktion ist ungültig."
+
+#: bin/minios-thunar-actions:402
+msgid "The operation could not be started."
+msgstr "Der Vorgang konnte nicht gestartet werden."
+
+#: bin/minios-thunar-uca-sync:91
+msgid "Open Terminal Here"
+msgstr "Terminal hier öffnen"
+
+#: bin/minios-thunar-uca-sync:93
+msgid "Open terminal in the current directory"
+msgstr "Terminal im aktuellen Verzeichnis öffnen"
+
+#: bin/minios-thunar-uca-sync:96
+msgid "Create Module…"
+msgstr "Modul erstellen…"
+
+#: bin/minios-thunar-uca-sync:98
+msgid "Create a MiniOS module from the selected directory"
+msgstr "Ein MiniOS-Modul aus dem gewählten Verzeichnis erstellen"
+
+#: bin/minios-thunar-uca-sync:101
+msgid "Extract Module…"
+msgstr "Modul extrahieren…"
+
+#: bin/minios-thunar-uca-sync:103
+msgid "Extract the selected MiniOS module into a directory"
+msgstr "Das gewählte MiniOS-Modul in ein Verzeichnis extrahieren"
+
+#: bin/minios-thunar-uca-sync:111
+msgid "Activate the selected MiniOS module"
+msgstr "Das gewählte MiniOS-Modul aktivieren"
+
+#: bin/minios-thunar-uca-sync:116
+msgid "Deactivate the selected MiniOS module"
+msgstr "Das gewählte MiniOS-Modul deaktivieren"
+
+#: bin/minios-thunar-uca-sync:130
+msgid "Thunar custom actions file has an invalid root element."
+msgstr "Die Thunar-Datei für benutzerdefinierte Aktionen hat ein ungültiges Root-Element."
+
+#: bin/minios-thunar-uca-sync:207
+msgid "Could not update Thunar custom actions: {}"
+msgstr "Thunar-Benutzeraktionen konnten nicht aktualisiert werden: {}"
