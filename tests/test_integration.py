@@ -220,7 +220,7 @@ class FrontendTests(unittest.TestCase):
             if isinstance(func, ast.Attribute) and func.attr in ('Popen', 'check_output'):
                 calls.append(node)
                 self.assertFalse(any(keyword.arg == 'shell' for keyword in node.keywords))
-        self.assertGreaterEqual(len(calls), 3)
+        self.assertEqual(len(calls), 1)
 
 
     def test_default_targets_are_siblings(self):
@@ -239,14 +239,78 @@ class FrontendTests(unittest.TestCase):
         runtime.assert_not_called()
         error.assert_called_once()
 
-    def test_conversion_dialog_uses_activity_indicator_and_action_area_cancel(self):
+    def test_conversion_dialog_uses_shared_indeterminate_progress(self):
         source = ACTIONS_PATH.read_text()
-        self.assertIn('self.progress = Gtk.ProgressBar()', source)
-        self.assertIn('self.progress.pulse()', source)
-        self.assertIn('GLib.timeout_add(90, self._pulse)', source)
-        self.assertIn('action_area = self.dialog.get_action_area()', source)
+        self.assertIn('apply_minios_css()', source)
+        self.assertIn('self.dialog = ProgressDialog(', source)
+        self.assertIn("self.view.set_state('running')", source)
+        self.assertNotIn('Gtk.ProgressBar()', source)
         self.assertNotIn('Gtk.Spinner()', source)
         self.assertNotIn('set_fraction(', source)
+
+    def test_jobs_use_command_runner_and_keep_conversion_cancellable(self):
+        self.assertTrue(issubclass(actions.ConversionJob, actions.ProgressJob))
+        self.assertTrue(issubclass(actions.RuntimeJob, actions.ProgressJob))
+        source = ACTIONS_PATH.read_text()
+        self.assertNotIn('subprocess.Popen(', source)
+        self.assertIn('self.runner = CommandRunner(', source)
+        self.assertIn('stderr_callback=self._handle_stderr_line', source)
+        self.assertIn('maximum_output_bytes=1024 * 1024', source)
+        self.assertIn("cancellable=True", source)
+
+    def test_conversion_keeps_ndjson_validation_and_cancel_semantics(self):
+        job = actions.ConversionJob.__new__(actions.ConversionJob)
+        job.protocol_error = None
+        job._phase = mock.Mock()
+        job._handle_stdout_line('{"event":"phase","phase":"verify"}\n')
+        job._phase.assert_called_once_with('verify')
+        job._handle_stdout_line('not-json\n')
+        self.assertIsNotNone(job.protocol_error)
+
+        job.finished = False
+        job.cancelled = False
+        job.label = mock.Mock()
+        job.runner = mock.Mock()
+        job._on_response(None, actions.Gtk.ResponseType.CANCEL)
+        self.assertTrue(job.cancelled)
+        job.runner.cancel.assert_called_once_with()
+
+    def test_runtime_error_details_keep_stderr_separate_and_preferred(self):
+        job = actions.RuntimeJob.__new__(actions.RuntimeJob)
+        job.stderr = ['stderr detail']
+        job.stdout = ['stdout detail']
+        job.frontend_error = None
+        job.returncode = 1
+        self.assertEqual(job._result(), (False, 'stderr detail'))
+
+    def test_standard_errors_use_minios_gui(self):
+        with mock.patch.object(actions, 'show_error_dialog') as dialog:
+            actions.show_error('Title', 'Message', 'Details', parent='parent')
+        dialog.assert_called_once_with(
+            'parent', 'Title', 'Message\n\nDetails')
+
+    def test_target_chooser_uses_shared_helper_without_overwrite_acceptance(self):
+        with mock.patch.object(actions, 'choose_save_file', return_value=None) as chooser:
+            self.assertIsNone(actions.choose_target('/tmp/source', 'create'))
+        self.assertFalse(chooser.call_args[1]['overwrite_confirmation'])
+
+    def test_target_chooser_retries_from_selected_target(self):
+        with mock.patch.object(
+                actions, 'choose_save_file',
+                side_effect=['/tmp/chosen/new-name', None]) as chooser, \
+                mock.patch.object(actions.os.path, 'lexists', return_value=True), \
+                mock.patch.object(actions, 'show_error') as error:
+            self.assertIsNone(actions.choose_target('/tmp/source', 'create'))
+
+        self.assertEqual(chooser.call_count, 2)
+        self.assertEqual(chooser.call_args_list[1][1]['current_folder'],
+                         '/tmp/chosen')
+        self.assertEqual(chooser.call_args_list[1][1]['current_name'],
+                         'new-name.sb')
+        self.assertFalse(
+            chooser.call_args_list[1][1]['overwrite_confirmation'])
+        error.assert_called_once()
+
 
 class PackageLayoutTests(unittest.TestCase):
     def test_session_hooks_are_packaged(self):
@@ -272,6 +336,10 @@ class PackageLayoutTests(unittest.TestCase):
         self.assertIn('Xsession.d', makefile)
         self.assertNotIn('dir2sb.py', makefile)
         self.assertNotIn('sb2dir.py', makefile)
+
+    def test_package_declares_minios_gui_api_dependency(self):
+        control = (ROOT / 'debian/control').read_text()
+        self.assertEqual(control.count('python3-minios-gui (>= 1.4.0)'), 2)
 
 
 if __name__ == '__main__':

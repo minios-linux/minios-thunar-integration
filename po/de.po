@@ -3,10 +3,10 @@
 # This file is distributed under the same license as the minios-thunar-actions package.
 msgid ""
 msgstr ""
-"Project-Id-Version: minios-thunar-integration 1.0.0\n"
+"Project-Id-Version: minios-thunar-integration 1.0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-05 19:21+0300\n"
-"PO-Revision-Date: 2026-09-04 21:17+0000\n"
+"POT-Creation-Date: 2026-09-07 02:27+0300\n"
+"PO-Revision-Date: 2026-09-06 23:27+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de\n"
@@ -15,116 +15,121 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: bin/minios-thunar-actions:98 bin/minios-thunar-actions:377
+#: bin/minios-thunar-actions:94 bin/minios-thunar-actions:301
 msgid "Create Module"
 msgstr "Modul erstellen"
 
-#: bin/minios-thunar-actions:99
+#: bin/minios-thunar-actions:95
 msgid "Create"
 msgstr "Erstellen"
 
-#: bin/minios-thunar-actions:102 bin/minios-thunar-actions:383
+#: bin/minios-thunar-actions:98 bin/minios-thunar-actions:307
 msgid "Extract Module"
 msgstr "Modul extrahieren"
 
-#: bin/minios-thunar-actions:103
+#: bin/minios-thunar-actions:99
 msgid "Extract"
 msgstr "Extrahieren"
 
-#: bin/minios-thunar-actions:108 bin/minios-thunar-actions:155
-msgid "Cancel"
-msgstr "Abbrechen"
-
-#: bin/minios-thunar-actions:124
+#: bin/minios-thunar-actions:112
 msgid "The selected destination already exists."
 msgstr "Das gewählte Ziel existiert bereits."
 
-#: bin/minios-thunar-actions:144 bin/minios-thunar-actions:189
-msgid "Preparing…"
-msgstr "Vorbereitung…"
-
-#: bin/minios-thunar-actions:170
+#: bin/minios-thunar-actions:144
 msgid "Cancelling…"
 msgstr "Abbruch läuft…"
 
-#: bin/minios-thunar-actions:190
-msgid "Compressing module…"
-msgstr "Modul wird komprimiert…"
+#: bin/minios-thunar-actions:158
+msgid "Cancelled."
+msgstr "Abgebrochen."
 
-#: bin/minios-thunar-actions:191
-msgid "Verifying module…"
-msgstr "Modul wird überprüft…"
+#: bin/minios-thunar-actions:160
+msgid "Completed successfully."
+msgstr "Erfolgreich abgeschlossen."
 
-#: bin/minios-thunar-actions:192
-msgid "Publishing result…"
-msgstr "Ergebnis wird veröffentlicht…"
-
-#: bin/minios-thunar-actions:193
-msgid "Extracting module…"
-msgstr "Modul wird extrahiert…"
-
-#: bin/minios-thunar-actions:194
-msgid "Finishing…"
-msgstr "Abschluss…"
-
-#: bin/minios-thunar-actions:196
-msgid "Working…"
-msgstr "Wird ausgeführt…"
-
-#: bin/minios-thunar-actions:212 bin/minios-thunar-actions:216
-msgid "The module tool returned invalid progress data."
-msgstr "Das Modul-Tool hat ungültige Fortschrittsdaten zurückgegeben."
-
-#: bin/minios-thunar-actions:337
-msgid "Creating Module"
-msgstr "Modul wird erstellt"
-
-#: bin/minios-thunar-actions:339
-msgid "Extracting Module"
-msgstr "Modul wird extrahiert"
-
-#: bin/minios-thunar-actions:346 bin/minios-thunar-actions:368
+#: bin/minios-thunar-actions:162 bin/minios-thunar-actions:270
+#: bin/minios-thunar-actions:292
 msgid "The module operation failed."
 msgstr "Der Modulvorgang ist fehlgeschlagen."
 
-#: bin/minios-thunar-actions:354 bin/minios-thunar-actions:395
-#: bin/minios-thunar-actions:401
+#: bin/minios-thunar-actions:193 bin/minios-thunar-actions:198
+msgid "Preparing…"
+msgstr "Vorbereitung…"
+
+#: bin/minios-thunar-actions:199
+msgid "Compressing module…"
+msgstr "Modul wird komprimiert…"
+
+#: bin/minios-thunar-actions:200
+msgid "Verifying module…"
+msgstr "Modul wird überprüft…"
+
+#: bin/minios-thunar-actions:201
+msgid "Publishing result…"
+msgstr "Ergebnis wird veröffentlicht…"
+
+#: bin/minios-thunar-actions:202
+msgid "Extracting module…"
+msgstr "Modul wird extrahiert…"
+
+#: bin/minios-thunar-actions:203
+msgid "Finishing…"
+msgstr "Abschluss…"
+
+#: bin/minios-thunar-actions:205
+msgid "Working…"
+msgstr "Wird ausgeführt…"
+
+#: bin/minios-thunar-actions:216 bin/minios-thunar-actions:220
+msgid "The module tool returned invalid progress data."
+msgstr "Das Modul-Tool hat ungültige Fortschrittsdaten zurückgegeben."
+
+#: bin/minios-thunar-actions:261
+msgid "Creating Module"
+msgstr "Modul wird erstellt"
+
+#: bin/minios-thunar-actions:263
+msgid "Extracting Module"
+msgstr "Modul wird extrahiert"
+
+#: bin/minios-thunar-actions:278 bin/minios-thunar-actions:320
+#: bin/minios-thunar-actions:326
 msgid "MiniOS Module Action"
 msgstr "MiniOS Modul-Aktion"
 
-#: bin/minios-thunar-actions:355
+#: bin/minios-thunar-actions:279
 msgid "This action is available only when the current root filesystem uses AUFS."
 msgstr "Diese Aktion ist nur verfügbar, wenn das aktuelle Root-Dateisystem AUFS verwendet."
 
-#: bin/minios-thunar-actions:359 bin/minios-thunar-uca-sync:109
+#: bin/minios-thunar-actions:283 bin/minios-thunar-uca-sync:109
 msgid "Activate Module"
 msgstr "Modul aktivieren"
 
-#: bin/minios-thunar-actions:360
+#: bin/minios-thunar-actions:284
 msgid "Activating module…"
 msgstr "Modul wird aktiviert…"
 
-#: bin/minios-thunar-actions:362 bin/minios-thunar-uca-sync:114
+#: bin/minios-thunar-actions:286 bin/minios-thunar-uca-sync:114
 msgid "Deactivate Module"
 msgstr "Modul deaktivieren"
 
-#: bin/minios-thunar-actions:363
+#: bin/minios-thunar-actions:287
 msgid "Deactivating module…"
 msgstr "Modul wird deaktiviert…"
 
-#: bin/minios-thunar-actions:378
+#: bin/minios-thunar-actions:302
 msgid "The selected path is not a directory."
 msgstr "Der gewählte Pfad ist kein Verzeichnis."
 
-#: bin/minios-thunar-actions:384
+#: bin/minios-thunar-actions:308
 msgid "The selected module is not a regular file."
 msgstr "Das gewählte Modul ist keine reguläre Datei."
 
-#: bin/minios-thunar-actions:396
+#: bin/minios-thunar-actions:321
 msgid "The requested Thunar action is not valid."
 msgstr "Die angeforderte Thunar-Aktion ist ungültig."
 
-#: bin/minios-thunar-actions:402
+#: bin/minios-thunar-actions:327
 msgid "The operation could not be started."
 msgstr "Der Vorgang konnte nicht gestartet werden."
 
@@ -167,3 +172,6 @@ msgstr "Die Thunar-Datei für benutzerdefinierte Aktionen hat ein ungültiges Ro
 #: bin/minios-thunar-uca-sync:207
 msgid "Could not update Thunar custom actions: {}"
 msgstr "Thunar-Benutzeraktionen konnten nicht aktualisiert werden: {}"
+
+#~ msgid "Cancel"
+#~ msgstr "Abbrechen"
