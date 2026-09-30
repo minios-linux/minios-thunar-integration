@@ -22,7 +22,7 @@ Depends: ${misc:Depends},
          exo-utils,
          util-linux,
          pkexec | policykit-1,
-         minios-tools (>= 1.6.7)
+         minios-tools (>= 1.8.0)
 Description: MiniOS integration for the Thunar file manager
  Adds localized Thunar custom actions for MiniOS modules. The GTK frontend
  delegates module creation, extraction, activation, and deactivation to

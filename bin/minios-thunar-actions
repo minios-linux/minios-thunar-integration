@@ -7,6 +7,7 @@ import json
 import os
 import subprocess
 import sys
+import tempfile
 
 import gi
 gi.require_version('Gtk', '3.0')
@@ -52,10 +53,12 @@ def root_fstype():
 
 
 def build_conversion_argv(operation, source, target):
+    prefix = [] if os.geteuid() == 0 else [PKEXEC]
     if operation == 'create':
-        return [DIR2SB, '--json', '--', source, target]
+        return prefix + [DIR2SB, '--json', '--allow-special', '--', source, target]
     if operation == 'extract':
-        return [SB2DIR, '--json', '--', source, target]
+        return prefix + [SB2DIR, '--json', '--keep-ownership', '--allow-special',
+                         '--', source, target]
     raise ValueError('unsupported conversion operation')
 
 
@@ -189,9 +192,26 @@ class ProgressJob(object):
 class ConversionJob(ProgressJob):
     def __init__(self, title, argv):
         self.protocol_error = None
-        super(ConversionJob, self).__init__(
-            title, _('Preparing…'), argv, (440, 130), cancellable=True,
-            detail_limit=200)
+        self.cancel_directory = tempfile.TemporaryDirectory(
+            prefix='minios-module-conversion-')
+        self.cancel_marker = os.path.join(self.cancel_directory.name, 'cancel')
+        argv = list(argv)
+        separator = argv.index('--')
+        argv[separator:separator] = ['--cancel-file', self.cancel_marker]
+        try:
+            super(ConversionJob, self).__init__(
+                title, _('Preparing…'), argv, (440, 130), cancellable=True,
+                detail_limit=200)
+        except Exception:
+            self.cancel_directory.cleanup()
+            raise
+
+    def _on_response(self, dialog, response):
+        if response == Gtk.ResponseType.CANCEL and not self.finished and not self.cancelled:
+            descriptor = os.open(
+                self.cancel_marker, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            os.close(descriptor)
+        super(ConversionJob, self)._on_response(dialog, response)
 
     def _phase(self, phase):
         labels = {
@@ -225,6 +245,7 @@ class ConversionJob(ProgressJob):
                 self._phase(phase)
 
     def _result(self):
+        self.cancel_directory.cleanup()
         details = self._stderr_text()
         for frontend_detail in (self.protocol_error, self.frontend_error):
             if not frontend_detail:

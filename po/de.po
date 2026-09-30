@@ -3,7 +3,7 @@
 # This file is distributed under the same license as the minios-thunar-actions package.
 msgid ""
 msgstr ""
-"Project-Id-Version: minios-thunar-integration 1.0.1\n"
+"Project-Id-Version: minios-thunar-integration 1.1.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-09-07 02:27+0300\n"
 "PO-Revision-Date: 2026-09-06 23:27+0000\n"

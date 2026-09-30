@@ -191,15 +191,25 @@ class UcaSyncTests(unittest.TestCase):
 
 
 class FrontendTests(unittest.TestCase):
-    def test_conversion_argv_preserves_spaces_unicode_and_dash_names(self):
+    @mock.patch.object(actions.os, 'geteuid', return_value=1000)
+    def test_conversion_argv_preserves_spaces_unicode_and_dash_names(self, _geteuid):
         source = '/tmp/Каталог с пробелами/-источник'
         target = '/tmp/Результат с пробелами.sb'
         self.assertEqual(
             actions.build_conversion_argv('create', source, target),
-            ['/usr/bin/dir2sb', '--json', '--', source, target])
+            ['/usr/bin/pkexec', '/usr/bin/dir2sb', '--json', '--allow-special',
+             '--', source, target])
         self.assertEqual(
             actions.build_conversion_argv('extract', target, source),
-            ['/usr/bin/sb2dir', '--json', '--', target, source])
+            ['/usr/bin/pkexec', '/usr/bin/sb2dir', '--json', '--keep-ownership',
+             '--allow-special', '--', target, source])
+
+    def test_root_conversion_does_not_request_another_authorization(self):
+        with mock.patch.object(actions.os, 'geteuid', return_value=0):
+            argv = actions.build_conversion_argv('extract', '/module.sb', '/tree')
+        self.assertEqual(argv, [
+            '/usr/bin/sb2dir', '--json', '--keep-ownership', '--allow-special',
+            '--', '/module.sb', '/tree'])
 
     def test_runtime_argv_is_fixed(self):
         path = '/tmp/модуль с пробелом/-test.sb'
@@ -271,7 +281,10 @@ class FrontendTests(unittest.TestCase):
         job.cancelled = False
         job.label = mock.Mock()
         job.runner = mock.Mock()
-        job._on_response(None, actions.Gtk.ResponseType.CANCEL)
+        with tempfile.TemporaryDirectory() as directory:
+            job.cancel_marker = os.path.join(directory, 'cancel')
+            job._on_response(None, actions.Gtk.ResponseType.CANCEL)
+            self.assertTrue(os.path.isfile(job.cancel_marker))
         self.assertTrue(job.cancelled)
         job.runner.cancel.assert_called_once_with()
 
